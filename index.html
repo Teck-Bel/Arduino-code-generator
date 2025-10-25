@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang ="nl">
+  <head>
+    <meta charset ="UTF-8" />
+    <title> ModelTeck Code Generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #153d77; /* Teck kleuren */
+        color: white;
+        margin: 0;
+        padding: 30px;
+      }
+      textarea {
+        width: 80%;
+        height: 150px;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        resize: none;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        background-color: #1e63c0;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #2c7be5;
+      }
+      pre {
+        background: #0e295a;
+        text-align: left;
+        color: #c4e2ff;
+        padding: 15px;
+        border-radius: 10px;
+        width: 80%;
+        margin: 20px auto;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1> ModelTeck Code Generator</h1>
+    <p>Type je commando's in het Nederlands, één per regel.</p>
+
+    <textarea id="commands" placeholder="bv. als knop1 wordt ingedrukt dan draait servo1 90°"></textarea>
+    <br />
+    <button onclic="generateCode()">Genereer arduino-code</button>
+
+    <pre id="output"></pre>
+    <button id="downloadBtn" style="display:none;" onclick="downloadCode()">💾 Download .ino</button>
+    
+    <script>
+      function generateCode() {
+        const input = document.getElementById("commands").value.trim().toLowerCase();
+        const lines = input.split("\n");
+        let setup = "";
+        let loop = "";
+        let includes = "";
+        let variables = "";
+
+        // basis voor servo ondersteuning
+        let usesServo = false;
+
+        lines.forEach(line => {
+          // Servobediening
+          if(line.includes("servo" or "Servo")) usesServo = true;
+
+          // Herken eenvoudige patronen
+          if (line.includes("als" && line.includes("knop") && line.includes("servo")) {
+            const knopMatch line.match(/knop(\d+)/);
+            const servoMatch line.match(/servo(\d+)/);
+            const angleMatch line.match(/(\d+)\s*graden?|\b(\d+)\b/);
+
+            const knop = knopMatch ? knopMatch[1] : "1";
+            const servo = servoMatch ? servoMatch[1] : "1";
+            const angle = angleMatch ? angleMatch[1] || angleMatch[2] : "90";
+
+            setup += `  pinMode(${knop}, INPUT);\n  servo${servo}.attach(${9 + (servo - 1)});\n`;
+            loop += `  if (digitalRead(${knop}) == HIGH) {\n    servo${servo}.write(${angle});\n  }\n`;
+            variables += `Servo servo${servo};\n`;
+          }
+        });
+        if (usesServo) includes += "#include <Servo.h>\n";
+
+        let code = `${includes}\n${variables}\nvoid setup() {\n${setup}}\n\nvoid loop() {\n${loop}}\n`;
+
+        document.getElementById("output").textContent = code;
+        document.getElementById("downloadBtn").style.display = "inline-block";
+      }
+
+       function downloadCode() {
+        const code = document.getElementById("output").textContent;
+        const blob = new Blob([code], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "modelteck_project.ino";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    </script>
+  </body>
+</html>

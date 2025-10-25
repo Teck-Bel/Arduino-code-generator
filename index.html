@@ -74,9 +74,9 @@
 
           // Herken eenvoudige patronen
           if (line.includes("als") && line.includes("knop") && line.includes("servo")) {
-            const knopMatch line.match(/knop(\d+)/);
-            const servoMatch line.match(/servo(\d+)/);
-            const angleMatch line.match(/(\d+)\s*graden?|\b(\d+)\b/);
+            const knopMatch = line.match(/knop(\d+)/);
+            const servoMatch = line.match(/servo(\d+)/);
+            const angleMatch = line.match(/(\d+)\s*graden?|\b(\d+)\b/);
 
             const knop = knopMatch ? knopMatch[1] : "1";
             const servo = servoMatch ? servoMatch[1] : "1";

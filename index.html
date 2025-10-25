@@ -51,7 +51,7 @@
 
     <textarea id="commands" placeholder="bv. als knop1 wordt ingedrukt dan draait servo1 90°"></textarea>
     <br />
-    <button onclic="generateCode()">Genereer arduino-code</button>
+    <button onclick="generateCode()">Genereer arduino-code</button>
 
     <pre id="output"></pre>
     <button id="downloadBtn" style="display:none;" onclick="downloadCode()">💾 Download .ino</button>
@@ -73,7 +73,7 @@
           if(line.includes("servo")) usesServo = true;
 
           // Herken eenvoudige patronen
-          if (line.includes("als" && line.includes("knop") && line.includes("servo")) {
+          if (line.includes("als") && line.includes("knop") && line.includes("servo")) {
             const knopMatch line.match(/knop(\d+)/);
             const servoMatch line.match(/servo(\d+)/);
             const angleMatch line.match(/(\d+)\s*graden?|\b(\d+)\b/);
